@@ -35,12 +35,13 @@
     // A fresh search click targets that card; history navigation restores its view.
     const [type,kind,id]=route.split('/');
     const cached=cardViews.get(route);
-    if(type==='entry'&&cached&&(currentRoute==='menu'||currentRoute.startsWith('learn/'))){
+    if(type==='entry'&&cached&&(currentRoute==='menu'||currentRoute.startsWith('learn/')||/^(entry|component)\/(people|cards)(?:\/|$)/.test(currentRoute))){
       cached.selected=id;
       const record=listFor(kind).find(x=>x.id===id);
       if(cached.nameQuery&&record){const q=cached.nameQuery.normalize('NFC').toLocaleLowerCase().replace(/[\s!.]/g,'');if(![record.name,record.english].some(name=>name.normalize('NFC').toLocaleLowerCase().replace(/[\s!.]/g,'').includes(q))){cached.nameQuery='';cached.draft='';cached.message='';}}
       if(kind==='cards'&&cached.filter!=='all'&&record?.group!==cached.filter)cached.filter='all';
     }
+    if(route==='component/cards/judgment'&&cached)Object.assign(cached,{selected:'barrel',filter:'judgment',draft:'',nameQuery:'',message:''});
     positions.set(currentRoute,window.scrollY);
     history.pushState({bangGuideV2:true,depth:(history.state?.depth||0)+1,learning:{...state.learning}},'',`#${route}`);render();
   };
@@ -84,20 +85,84 @@
     return shell('메뉴',[searchPanel,el('div',{class:'menu-grid v2-menu-grid'},tile('cards','게임 카드',stack(['bang','remington','barrel'])),tile('people','인물 카드',stack(['suzy','slab','willy'])),tile('roles','역할 카드',stack(['deputy','outlaw','sheriff'])),el('div',{class:'v2-small-components'},tile('bullets','총알 토큰',el('span',{class:'menu-bullet-frame'},img('bullet-token','','menu-bullet-token')),true),tile('board','보드',img('board',''),true),tile('summary','요약 카드',img('summary',''),true)))]);
   }
   function component(id,group){
-    if(['roles','people','cards'].includes(id)){if(['weapon','brown','blue'].includes(group)&&!cardViews.has(currentRoute))cardViews.set(currentRoute,{selected:group==='weapon'?'volcanic':group==='blue'?'barrel':'bang',filter:group,draft:'',nameQuery:''});return catalog(id);}
+    if(['roles','people','cards'].includes(id)){if(['weapon','brown','blue','judgment'].includes(group)&&!cardViews.has(currentRoute))cardViews.set(currentRoute,{selected:group==='weapon'?'volcanic':['blue','judgment'].includes(group)?'barrel':'bang',filter:group,draft:'',nameQuery:''});return catalog(id);}
     let content;
     if(id==='bullets')content=[el('div',{class:'bullet-large','aria-hidden':'true'},img('bullet-token','','component-bullet-token')),img('board','보드 위쪽의 총알 모양 칸에 총알을 놓아요.','hero-art board-art'),el('div',{class:'prose'},paragraph('총알은 남은 체력을 나타내요. 뱅을 쓸 때 사용하는 탄약은 아니에요.'),paragraph('인물 카드에 그려진 총알 수만큼 놓아요. 보안관은 하나를 더 놓아요. 피해를 받으면 빼고, 회복하면 되돌려 놓아요.')),note('손에 든 카드와도 연결돼요','차례를 마칠 때는 남은 총알 수만큼만 카드를 들고 있어요. 총알이 3개면 카드는 최대 3장이에요.'),el('div',{class:'component-health'},window.BangHealth(el,img,4,'lucky',false,100))];
     else if(id==='board')content=[img('board','위에는 총알, 아래에는 역할·인물·무기를 놓는 개인 보드','hero-art board-art'),el('div',{class:'prose'},paragraph('총알 토큰과 내 역할·인물·무기를 정리하는 개인 보드예요.'),paragraph('왼쪽은 역할 카드, 가운데는 인물 카드, 오른쪽은 무기 자리예요. 시작 무기는 판에 그려진 콜트 .45이며 사거리는 1이에요.'),paragraph('역할은 보안관만 공개해요. 인물은 모두 공개하고 능력을 읽어요.')),note('설치 카드와 손에 든 카드는 달라요','술통·야생마 같은 다른 설치 카드는 자기 앞에 놓아요. 무기 칸에 모든 파란 카드를 쌓는 것은 아니에요.')];
     else if(id==='summary'){
-      const rows=[['✦','뱅 효과','막지 못하면 총알을 하나 빼요.'],['↗','빗나감 효과','자신에게 오는 뱅 효과를 막아요.'],['＋','총알 되돌려 놓기','시작할 때 놓은 총알 수를 넘길 수 없어요.'],['▱','카드 가져오기','대상 표시가 없으면 덱에서 받아요.'],['×','카드 버리기','대상과 조건은 카드에서 확인해요.'],['◎','무기 사거리 안의 한 사람','무기의 사거리와 거리를 비교해요.'],['①','정해진 거리 안의 한 사람','무기의 사거리로 늘어나지 않아요.'],['▤','책 표시','자세한 조건을 카드 설명에서 확인해요.']];
+      const rows=[['✦','뱅 효과','막지 못하면 총알을 하나 빼요.'],['↗','빗나감 효과','자신에게 오는 뱅 효과를 막아요.'],['＋','총알 되돌려 놓기','최대 총알 수를 넘길 수 없어요.'],['▱','카드 가져오기','대상 표시가 없으면 덱에서 받아요.'],['×','카드 버리기','대상과 조건은 카드에서 확인해요.'],['◎','무기 사거리 안의 한 사람','무기의 사거리와 거리를 비교해요.'],['①','정해진 거리 안의 한 사람','무기의 사거리로 늘어나지 않아요.'],['▤','책 표시','자세한 조건을 카드 설명에서 확인해요.']];
       content=[img('summary','카드 효과와 대상 기호가 담긴 요약 카드','hero-art board-art'),paragraph('카드 아래의 기호를 읽는 데 도움을 주는 참조표예요. 실제 카드의 기호와 아래 뜻을 함께 확인하세요.'),el('div',{class:'symbol-list'},rows.map(([,title,text])=>el('div',{class:'summary-row'},el('strong',{},title),el('small',{},text))))];
     }else return missing();
     const titles={bullets:'총알 토큰',summary:'요약 카드',board:'보드'};
     return shell('메뉴',el('section',{class:'panel'},el('h2',{class:'page-title'},titles[id]),content));
   }
   const listFor=kind=>kind==='roles'?D.roles:kind==='people'?D.people:D.cards;
+  const personReferences=new Map([
+    ...D.roles.map(record=>[record.name,`entry/roles/${record.id}`]),
+    ...D.cards.map(record=>[record.name,`entry/cards/${record.id}`]),
+    ['모든 역할 카드','component/roles'],['모든 역할','component/roles'],
+    ['뱅','entry/cards/bang'],['빗나감','entry/cards/missed'],['강탈','entry/cards/panic'],['인디언','entry/cards/indians'],
+    ['웰스 파고','entry/cards/wells-fargo'],['판정 카드','component/cards/judgment'],['판정카드','component/cards/judgment']
+  ]);
+  function personText(parts,record,all=false){
+    const names=[...personReferences.keys()].filter(name=>all||record.references.includes(name)).sort((a,b)=>b.length-a.length);
+    const result=[];
+    for(const part of parts){
+      const chunks=[];let cursor=0;
+      // Match known local names literally, without interpreting text as HTML or regex.
+      while(cursor<part.text.length){
+        let found=null,index=part.text.length;
+        for(const name of names){const at=part.text.indexOf(name,cursor);if(at>=0&&(at<index||at===index&&(!found||name.length>found.length))){index=at;found=name;}}
+        if(!found){chunks.push(document.createTextNode(part.text.slice(cursor)));break;}
+        if(index>cursor)chunks.push(document.createTextNode(part.text.slice(cursor,index)));
+        chunks.push(el('button',{type:'button',class:'person-card-link','aria-label':`${found} 설명 보기`,onclick:()=>go(personReferences.get(found))},found));cursor=index+found.length;
+      }
+      result.push(part.bold?el('strong',{},...chunks):el('span',{},...chunks));
+    }
+    return result;
+  }
+  function personList(items,record,all=false){
+    return el('ul',{},items.map(item=>{
+      const parts=Array.isArray(item)?item:item.parts;
+      return el('li',{},...personText(parts,record,all),item.children?.length?personList(item.children,record,all):null);
+    }));
+  }
+  function gameCardText(text,record,used){
+    const references=new Map([
+      ...D.roles.map(item=>[item.name,`entry/roles/${item.id}`]),
+      ...D.people.map(item=>[item.name,`entry/people/${item.id}`]),
+      ...D.cards.filter(item=>item.id!==record.id).map(item=>[item.name,`entry/cards/${item.id}`]),
+      ['뱅','entry/cards/bang'],['빗나감','entry/cards/missed'],['강탈','entry/cards/panic'],['인디언','entry/cards/indians'],
+      ['슬랩','entry/people/slab'],['웰스 파고','entry/cards/wells-fargo'],
+      ['판정','answer/judgment'],['설치','answer/installation'],['사거리','answer/distance'],['거리','answer/distance'],['무기','component/cards/weapon']
+    ]);
+    const names=[...references.keys()].filter(name=>references.get(name)!==`entry/cards/${record.id}`).sort((a,b)=>b.length-a.length);
+    const nodes=[];let cursor=0;
+    while(cursor<text.length){
+      let found=null,index=text.length;
+      for(const name of names){const at=text.indexOf(name,cursor);if(at>=0&&(at<index||at===index&&(!found||name.length>found.length))){found=name;index=at;}}
+      if(!found){nodes.push(document.createTextNode(text.slice(cursor)));break;}
+      if(index>cursor)nodes.push(document.createTextNode(text.slice(cursor,index)));
+      const route=references.get(found);
+      if(used.has(route))nodes.push(document.createTextNode(found));
+      else{nodes.push(el('button',{type:'button',class:'game-card-link','aria-label':`${found} 설명 보기`,onclick:()=>go(route)},found));used.add(route);}
+      cursor=index+found.length;
+    }
+    return nodes;
+  }
   function detail(record){
-    return [img(record.id,`${record.name} 카드`,'detail-art'),el('h3',{},record.name),el('p',{class:'english',lang:'en'},record.english),record.life?el('div',{class:'ability-meta'},`시작 총알 ${record.life}개 · 보안관이면 ${record.life+1}개`):null,paragraph(record.text),note('함께 기억해요',record.caution)];
+    const isGame=['brown','blue','weapon'].includes(record.group),usedGameLinks=new Set();
+    const description=record.group==='person'&&record.synergy?el('p',{class:'person-description'},...personText([{text:record.text}],record)):isGame?el('p',{class:'game-card-description'},...gameCardText(record.text,record,usedGameLinks)):paragraph(record.text);
+    let sections;
+    if(record.group==='role'&&record.remember){
+      sections=[el('section',{class:'role-remember','aria-label':'기억할 사항'},el('h4',{},'기억할 사항'),el('ul',{},record.remember.map(text=>el('li',{},text)))),
+        el('aside',{class:'note role-tips','aria-label':'Tip!'},el('h4',{},'Tip!'),el('ul',{},record.tips.map(parts=>el('li',{},parts.map(part=>part.bold?el('strong',{},part.text):document.createTextNode(part.text))))))];
+    }else if(record.group==='person'&&record.synergy){
+      sections=[record.remember.length?el('section',{class:'person-remember','aria-label':'기억할 사항'},el('h4',{},'기억할 사항'),personList(record.remember,record)):null,
+        el('aside',{class:'note person-tips','aria-label':'Tip!'},el('h4',{},'Tip!'),personList(record.tips,record)),
+        el('aside',{class:'note person-synergy','aria-label':'시너지 카드'},el('h4',{},'시너지 카드'),personList(record.synergy,record,true))];
+    }else sections=[isGame?el('aside',{class:'note game-card-note'},el('strong',{},'함께 기억해요'),el('span',{},...gameCardText(record.caution,record,usedGameLinks))):note('함께 기억해요',record.caution)];
+    return [img(record.id,`${record.name} 카드`,'detail-art'),el('h3',{},record.name),el('p',{class:'english',lang:'en'},record.english),record.life?el('div',{class:'ability-meta'},`시작 총알 ${record.life}개 · 보안관이면 ${record.life+1}개`):null,description,...sections];
   }
   function catalog(kind){
     if(kind==='roles'||kind==='people'||kind==='cards')return focusCatalog(kind);
@@ -213,7 +278,7 @@
     function fill(){
       const version=++fillVersion;
       clearTimeout(timer);
-      records=nameMatches(view.nameQuery||'').filter(x=>kind!=='cards'||view.filter==='all'||x.group===view.filter);
+      records=nameMatches(view.nameQuery||'').filter(x=>kind!=='cards'||view.filter==='all'||(view.filter==='judgment'?['barrel','jail','dynamite'].includes(x.id):x.group===view.filter));
       if(!records.some(x=>x.id===view.selected))view.selected=records[0]?.id||null;
       painted=undefined;
       slots=records.map(record=>el('button',{type:'button',class:'focus-card','data-card':record.id,
@@ -225,7 +290,7 @@
       select(records.find(x=>x.id===view.selected));
       requestAnimationFrame(()=>{if(!disposed&&version===fillVersion)center(view.selected);});
     }
-    if(kind==='cards')for(const [value,label]of[['all','전체'],['brown','갈색 카드'],['blue','파란 카드'],['weapon','무기']])filters.append(el('button',{
+    if(kind==='cards')for(const [value,label]of[['all','전체'],['brown','갈색 카드'],['blue','파란 카드'],['weapon','무기'],['judgment','판정 카드']])filters.append(el('button',{
       type:'button',class:'filter','data-filter':value,'aria-pressed':String(value===view.filter),onclick:()=>{view.filter=value;fill();}},label));
     const resize=()=>center(view.selected);
     window.addEventListener('resize',resize);

@@ -604,3 +604,104 @@ main[tabindex="-1"]:focus{outline:none}
 .v2-search-underlay>div{margin-top:0;transform-origin:top center;pointer-events:none}
 .v2-lookup-screen.v2-search-layer{position:fixed;top:0;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;height:100vh;height:100dvh;min-height:0;overflow-y:auto;overscroll-behavior:contain;background:#f5efe512!important;backdrop-filter:none;z-index:2}
 .v2-lookup-screen .v2-lookup-dialog{padding:24px 18px max(24px,env(safe-area-inset-bottom));gap:15px}
+
+/* Requested V2 reading and example refinements, scoped to learning screens. */
+.v2-learning{--v2-description-size:17px;--v2-description-weight:500;display:flex;flex-direction:column;min-height:100svh;min-height:100dvh;padding-bottom:0}
+.v2-learning-header{flex:0 0 auto}
+.v2-learning-main{display:flex;flex:1;flex-direction:column;padding-bottom:0}
+.v2-step-row{flex:0 0 auto}
+.v2-learning-main>.v2-scene-panel{flex:1;min-height:0;border-bottom-left-radius:0;border-bottom-right-radius:0}
+.v2-scene-description{font-size:var(--v2-description-size);font-weight:var(--v2-description-weight);line-height:1.7}
+.v2-title-bar+.v2-scene-description{margin-top:7px}
+.v2-caution{font-size:calc(var(--v2-description-size) - 1px);line-height:1.6}
+.v2-caution .v2-inline-link,.v2-title-bar .v2-inline-link{font:inherit;padding:0;min-height:0;line-height:inherit;vertical-align:baseline}
+.v2-title-bar .v2-inline-link{color:inherit}
+.v2-skip-button{font-weight:700}
+.v2-announcement .v2-step-row{display:none}
+.v2-announcement .v2-scene-description{font-size:24px;font-weight:500}
+.v2-announcement .v2-title-bar h2{padding-block:20px}
+[data-scene="goals"]>.v2-scene-panel>.v2-scene-description{font-size:18px;font-weight:600}
+.v2-goal h3,.v2-goal h3 .v2-inline-link{font-weight:700}
+.v2-goal-primary{display:block;font-weight:600}
+.v2-goal-extra{display:block;margin-top:7px;font-weight:400}
+
+.v2-roles-v1{gap:20px}
+.v2-role-pictures{width:66%;gap:18px 12px}
+.v2-role-pictures .v2-example-group{gap:7px}
+.v2-roles-v1>.v2-image-link{width:24%}
+.v2-overlap{position:relative;width:110px;max-width:100%;height:160px;flex-shrink:0}
+.v2-overlap-layer{position:absolute;top:0;bottom:0;width:calc(100% - var(--layers,0)*8px)}
+.v2-overlap-layer>.v2-image-link{width:100%;height:100%}
+.v2-overlap-layer>.v2-image-link img{width:100%;height:100%;max-height:none;object-fit:contain}
+.v2-role-pictures .v2-overlap{height:clamp(125px,22svh,165px)}
+.v2-role-pictures .v2-overlap img{width:100%;height:100%;max-height:none}
+.v2-image-caption{font-size:15px;line-height:1.5;text-align:center}
+.v2-character-example .v2-example-group{gap:13px}
+[data-example="bullets"] .v2-bullets{flex-direction:column;align-items:center;flex-wrap:nowrap;gap:4px;max-width:none}
+[data-example="bullets"] .v2-token-frame{width:58px;height:48px}
+[data-example="bullets"] .v2-token-frame img.v2-token{width:52px}
+.v2-starting-cards{display:flex;flex-direction:column;align-items:center;gap:16px}
+.v2-starting-cards>.v2-bullets{max-width:100%;flex-wrap:nowrap}
+.v2-starting-cards>.v2-card-fan{max-width:400px}
+.v2-starting-cards>.v2-transfer-arrow{font-size:32px}
+.v2-distance-ring .v2-person>strong:empty{display:none}
+.v2-ring-center{font-size:var(--v2-description-size);font-weight:var(--v2-description-weight)}
+.v2-seat.out .v2-person:after{font-size:60px;top:-14px;left:50%;transform:translateX(-50%);z-index:3}
+.v2-volcanic-example{display:flex;justify-content:center;align-items:center;gap:28px}
+.v2-volcanic-example>.v2-image-link{width:45%}
+.v2-volcanic-example>.v2-image-link img{height:clamp(165px,30svh,230px)}
+.v2-bang-stack{width:43%;height:clamp(165px,30svh,230px)}
+.v2-defense-stack{position:relative;width:min(100%,290px);height:clamp(220px,34svh,280px);margin:0 auto 10px}
+.v2-attacking-card,.v2-blocking-card{position:absolute;width:57%;height:88%}
+.v2-attacking-card{left:0;top:0}
+.v2-blocking-card{right:0;bottom:0;z-index:1}
+.v2-defense-stack .v2-image-link,.v2-defense-stack .v2-image-link img{height:100%;width:100%;object-fit:contain}
+.v2-attack-card-label{position:absolute;top:49%;left:4%;right:4%;padding:5px 2px;background:#fffcf7e8;border-radius:8px;font-size:13px;font-weight:600;pointer-events:none}
+.v2-barrel-example{display:flex;flex-direction:column;gap:16px;align-items:center}
+.v2-barrel-example>.v2-transfer{width:100%}
+.v2-blocked-symbol{display:flex;flex-direction:column;align-items:center;gap:5px}
+.v2-missed-symbol{display:block;width:90px;height:70px}
+.v2-card-zones{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-top:25px}
+.v2-card-zone{position:relative;border:2px dashed #bda68e;border-radius:18px;padding:22px 8px 12px;min-width:0}
+.v2-card-zone>strong{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:2px 7px;background:var(--panel);font-size:14px;white-space:nowrap}
+.v2-zone-cards{min-height:185px;display:flex;align-items:center;justify-content:center;gap:3px}
+.v2-zone-cards>.v2-image-link{width:48%}
+.v2-zone-cards>.v2-image-link:only-child{width:95%}
+.v2-zone-cards>.v2-image-link img{height:165px;max-width:100%;object-fit:contain}
+.v2-card-zone .v2-mini-cards img{max-height:92px}
+[data-example="reward"]{flex-direction:column;gap:18px}
+[data-example="reward"]>.v2-related{flex:0 0 auto}
+@media(prefers-reduced-motion:no-preference){
+ .v2-blocking-card{animation:v2-block-card 1.1s ease-out both}
+ .v2-reveal-cards>.v2-image-link{animation:v2-reveal-card .8s ease-out both}
+ .v2-discard-cards .v2-mini-cards{animation:v2-discard-card .9s ease-out both}
+ @keyframes v2-block-card{from{transform:translate(35px,-18px);opacity:.25}to{transform:none;opacity:1}}
+ @keyframes v2-reveal-card{from{transform:rotateY(80deg);opacity:.35}to{transform:none;opacity:1}}
+ @keyframes v2-discard-card{from{transform:translateY(-24px);opacity:.3}to{transform:none;opacity:1}}
+}
+@media(max-width:350px){.v2-role-pictures{gap:14px 7px}.v2-roles-v1{gap:14px}.v2-role-pictures .v2-overlap{height:125px}.v2-overlap{width:90px}.v2-card-zones{gap:12px}.v2-zone-cards{min-height:150px}.v2-zone-cards>.v2-image-link img{height:140px}.v2-card-zone>strong{font-size:13px}}
+@media(prefers-reduced-motion:no-preference){.v2-placed-cards>.v2-image-link{animation:v2-place-card .8s ease-out both}@keyframes v2-place-card{from{transform:translate(-15px,-20px);opacity:.3}to{transform:none;opacity:1}}}
+
+/* Role descriptions only: plain reminders and the existing tinted tip surface. */
+.role-remember{margin-top:22px;background:none}
+.role-remember h4,.role-tips h4{font-size:16px;font-weight:700;line-height:1.5;margin:0 0 9px}
+.role-remember ul,.role-tips ul{margin:0;padding-left:20px}
+.role-remember li,.role-tips li{line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+.role-remember li+li,.role-tips li+li{margin-top:9px}
+.role-remember{font-size:15px}
+.role-tips li strong{display:inline;margin:0;font-weight:700}
+
+/* Character copy uses the role-card hierarchy; other card screens keep their layout. */
+.person-remember{margin-top:22px;background:none;font-size:15px}
+.person-remember h4,.person-tips h4,.person-synergy h4{font-size:16px;font-weight:700;line-height:1.5;margin:0 0 9px}
+.person-remember ul,.person-tips ul,.person-synergy ul{margin:0;padding-left:20px}
+.person-remember li,.person-tips li,.person-synergy li{line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+.person-remember li+li,.person-tips li+li,.person-synergy li+li{margin-top:9px}
+.person-remember li>ul{margin-top:8px}
+.person-tips li strong,.person-synergy li strong{display:inline;margin:0;font-weight:700}
+.person-card-link{display:inline;background:none;padding:0;border:0;border-radius:3px;font:inherit;line-height:inherit;color:var(--brick-dark);text-decoration:underline;text-underline-offset:3px;vertical-align:baseline;overflow-wrap:anywhere}
+.person-card-link:focus-visible{outline-width:2px;outline-offset:3px}
+
+/* Linked card/rule terms preserve the existing game-card detail typography. */
+.game-card-link{display:inline;background:none;padding:0;border:0;border-radius:3px;font:inherit;line-height:inherit;color:var(--brick-dark);text-decoration:underline;text-underline-offset:3px;vertical-align:baseline;overflow-wrap:anywhere}
+.game-card-link:focus-visible{outline-width:2px;outline-offset:3px}
